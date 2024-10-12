@@ -228,7 +228,7 @@ class JobSeeker {
   };
   static async getJobs(req, res) {
     try {
-      const page = Number(req.query.page) || 0;
+      const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
       const skip = (page - 1) * limit;
       const totalJobs = await dbClient.db.collection('jobs').countDocuments();
@@ -240,8 +240,9 @@ class JobSeeker {
         .limit(limit)
         .toArray();
       return res.status(200).json(jobs, totalJobs, totalPages, page);
+      console.log('After');
     } catch (error) {
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: `Internal Server Error ${error}` });
     }
   };
 }
