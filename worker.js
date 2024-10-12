@@ -18,7 +18,7 @@ const nodemailer = require('nodemailer');
 
 require('dotenv').config();
 
-console.log('I am listening');
+console.log('Worker Listening');
 sendQueue.process(async (job, done) => {
   if (!job.data.email) {
     return done (new Error('Error Retreiving email' ));

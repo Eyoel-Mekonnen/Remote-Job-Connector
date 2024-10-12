@@ -40,7 +40,8 @@ router.get('/jobs/:jobId/applications/:applicationId/download-cv', EmployerMiddl
 
 /**Job Seekers Only */
 router.post('/jobseekers/:jobId/apply', JobSeekerMiddleWare.getJobSeeker, upload.single('file'), JobSeeker.uploadCv);
-router.get('/jobs', JobSeekerMiddleWare.getJobSeeker, JobSeeker.getJobs);
+/*router.get('/jobs', JobSeekerMiddleWare.getJobSeeker, JobSeeker.getJobs);*/
+router.get('/jobs', JobSeeker.getJobs);
 router.post('/profile/', JobSeekerMiddleWare.getJobSeeker, JobSeeker.createProfile);
 router.put('/profile/:id', JobSeekerMiddleWare.getJobSeeker, JobSeeker.updateProfile);
 router.delete('/profile/:id', JobSeekerMiddleWare.getJobSeeker, JobSeeker.deleteProfile);
