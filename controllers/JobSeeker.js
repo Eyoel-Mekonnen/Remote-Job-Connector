@@ -235,7 +235,7 @@ class JobSeeker {
       const totalPages = Math.ceil(totalJobs / limit);
       const jobs = await dbClient.db.collection('jobs')
         .find({})
-        .sort({ createdAt: -1})
+        /*.sort({ createdAt: -1})*/
         .skip(skip)
         .limit(limit)
         .toArray();
