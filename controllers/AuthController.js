@@ -1,6 +1,8 @@
 /* eslint consistent-return: "off" */
 
-import sha1 from 'sha1';
+//import sha1 from 'sha1';
+
+const sha1 = require('sha1');
 
 const uuid = require('uuid');
 

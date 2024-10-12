@@ -16,6 +16,9 @@ const imageThumbnail = require('image-thumbnail');
 
 const nodemailer = require('nodemailer');
 
+require('dotenv').config();
+
+console.log('I am listening');
 sendQueue.process(async (job, done) => {
   if (!job.data.email) {
     return done (new Error('Error Retreiving email' ));
@@ -37,8 +40,8 @@ sendQueue.process(async (job, done) => {
       port: 465,
       secure: true,
       auth: {
-        user: '****************',
-        pass: '****************',
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
       }
     });
     const verificationLink = `https://yourdomain.com/verify?token=${token}`;

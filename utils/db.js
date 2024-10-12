@@ -1,11 +1,12 @@
 const mongo = require('mongodb');
-
+require('dotenv').config();
 class DBClient {
   constructor() {
     const port = process.env.DB_PORT || '27017';
     const host = process.env.DB_HOST || 'localhost';
     const db = process.env.DB_DATABASE || 'files_manager';
-    const url = `mongodb://${host}:${port}`;
+    const dbUrl = process.env.URLDB;
+    const url = dbUrl || `mongodb://${host}:${port}`;
     this.mongoClient = new mongo.MongoClient(url, { useUnifiedTopology: true });
     this.mongoClient.connect()
       .then(() => {

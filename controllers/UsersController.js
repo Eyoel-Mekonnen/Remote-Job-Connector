@@ -1,9 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable consistent-return */
 
-import sha1 from 'sha1';
+//import sha1 from 'sha1';
 
-import { ObjectId } from 'bson';
+const sha1 = require('sha1');
+//import { ObjectId } from 'bson';
+
+const { ObjectId } = require('bson');
 
 const mongo = require('../utils/db');
 
