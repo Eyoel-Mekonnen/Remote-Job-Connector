@@ -28,7 +28,7 @@ exports.getConnect = (req, res) => {
   mongo.db.collection('users').findOne({ email })
     .then((result) => {
       if (!result) {
-        return res.status(401).send({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized/the email does not exist' });
       }
       const token = uuid.v4().toString();
       const keyToken = `auth_${token}`;
@@ -36,7 +36,7 @@ exports.getConnect = (req, res) => {
       const pwdHashedDB = result.password;
       const hashedPwd = sha1(password);
       if (hashedPwd !== pwdHashedDB) {
-        return res.status(401).send({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized/the stored hashed password and the input password hashed is not the same' });
       }
       const userID = result._id.toString();
       return redis.set(keyToken, userID, duration)
@@ -47,27 +47,27 @@ exports.getConnect = (req, res) => {
                 if (value) {
                   return token;
                 }
-                return res.status(401).send({ error: 'Unauthorized' });
+                return res.status(401).json({ error: 'Unauthorized/token was not found on redis' });
               })
-              .catch(() => res.status(401).send({ error: 'Unauthorized' }));
+              .catch(() => res.status(401).json({ error: 'Unauthorized/error retrieving token' }));
           }
-          return res.status(401).send('Unauthorized');
+          return res.status(401).json({ error: 'Unauthorized/there was an error retreiving the token'});
         })
-        .catch(() => res.status(401).send('Unauthorized'));
+        .catch(() => res.status(401).json({ error: 'Unauthorized/Overall error in retriving token'}));
     })
     .then((token) => {
       if (!token) {
-        return res.status(401).send({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized/token does not exist' });
       }
       return res.status(200).send({ token });
     })
-    .catch(() => res.status(401).send({ error: 'Unauthorized' }));
+    .catch(() => res.status(401).json({ error: 'Unauthorized/Error token does not exist' }));
 };
 
 exports.getDisconnect = (req, res) => {
   const xToken = req.headers['x-token'];
   if (!xToken) {
-    return res.status(401).send({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized/header does not contain token' });
   }
   const key = `auth_${xToken}`;
   return redis.get(key)
@@ -77,6 +77,6 @@ exports.getDisconnect = (req, res) => {
       }
       return redis.del(key);
     })
-    .then(() => (res.status(204).send()))
-    .catch(() => (res.status(401).send({ error: 'Unauthorized' })));
+    .then(() => (res.status(204).json()))
+    .catch(() => (res.status(401).json({ error: 'Unauthorized/token does not exist in redisdb' })));
 };

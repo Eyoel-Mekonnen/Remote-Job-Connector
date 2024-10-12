@@ -8,13 +8,13 @@ class EmployerMiddleWare {
   static async getEmployer(req, res, next) {
     const xToken = req.headers['x-token'];
     if (!xToken) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized/Token not found from redis' });
     }
     const key = `auth_${xToken}`;
     redis.get(key)
       .then((userID) => {
         if (!userID) {
-          res.status(401).json({ error: 'Unauthorized' });
+          res.status(401).json({ error: 'Unauthorized/userId not found from the redis' });
           throw new Error('Response message');
         }
         return mongo.db.collection('users').findOne({ _id: ObjectId(userID) });
@@ -26,11 +26,11 @@ class EmployerMiddleWare {
 	    req.employer = data;
             next()
           } else {
-            res.status(403).json({ error: 'Access Denied' });
+            res.status(403).json({ error: 'Access Denied/Not Employer' });
 	    throw new Error("Response message");
           }
         } else if (!data) {
-          res.status(404).json({ error: 'User not found' });
+          res.status(404).json({ error: 'User not found/not found from the mongodb' });
           throw new Error("Response message");
 	}
       })
@@ -38,7 +38,7 @@ class EmployerMiddleWare {
         if (error === 'Response message') {
           return;
         } else {
-          return res.status(500).json({ error: 'Internal Server Error' });
+          return res.status(500).json({ error: 'Internal Server Error/catch section' });
         }
       })
   };

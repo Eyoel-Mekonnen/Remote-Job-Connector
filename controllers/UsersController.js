@@ -112,23 +112,23 @@ exports.postNew = (req, res) => {
 exports.getMe = (req, res) => {
   const xToken = req.headers['x-token'];
   if (!xToken) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized/token' });
   }
   const key = `auth_${xToken}`;
   redis.get(key)
     .then((userID) => {
       if (!userID) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized/userId not retrieved' });
       }
       return mongo.db.collection('users').findOne({ _id: ObjectId(userID) });
     })
     .then((data) => {
       if (!data) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized/No user with that ID found from mongodb' });
       }
       return res.status(200).json({ id: data._id, email: data.email });
     })
-    .catch(() => res.status(401).json({ error: 'Unauthorized' }));
+    .catch(() => res.status(401).json({ error: 'Unauthorized/Error Catch section' }));
 };
 exports.verify = async (req, res) => {
   const verificationToken = req.query? req.query.token: null;
@@ -141,7 +141,7 @@ exports.verify = async (req, res) => {
     const userId = await redis.get(identificationToken);
     console.log(userId);
     if (!userId) {
-      return res.status(401).json('Unauthorized');
+      return res.status(401).json('Unauthorized/no Token found for that input');
     }
     if (userId) {
       const user = await mongo.db.collection('users').findOne({_id: ObjectId(userId)});
@@ -162,6 +162,6 @@ exports.verify = async (req, res) => {
   
     }
   } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error/catch section' });
   }
 }

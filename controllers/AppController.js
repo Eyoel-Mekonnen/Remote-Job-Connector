@@ -18,9 +18,9 @@ class AppController {
       })
       .then((value) => {
         stats.files = value;
-        return res.status(200).json(stats);
+        return res.status(200).json({stats});
       })
-      .catch(() => res.status(500).send('Falied to fetch stat'));
+      .catch(() => res.status(500).json({ error: 'Falied to fetch stat/stat of mongodb'}));
   }
 }
 module.exports = AppController;

@@ -186,7 +186,7 @@ class JobSeeker {
       });
      /* I am creating event listener to catch errors */
       blobStream.on('error', (error) => {
-        return res.status(500).json({error: 'Unable to upload image at this time'});
+        return res.status(500).json({error: 'Unable to upload file at this time'});
       })
       /* creating event listener here that will executed when the files is uploaded to the stream and make it public */
       blobStream.on('finish', async() => {
@@ -240,7 +240,6 @@ class JobSeeker {
         .limit(limit)
         .toArray();
       return res.status(200).json(jobs, totalJobs, totalPages, page);
-      console.log('After');
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
     }

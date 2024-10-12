@@ -14,7 +14,7 @@ class JobSeekerMiddleWare {
     redis.get(key)
       .then((userID) => {
         if (!userID) {
-          res.status(401).json({ error: 'Unauthorized' });
+          res.status(401).json({ error: 'Unauthorized/no user with that userID exists' });
           throw new Error('Response message');
         }
         return mongo.db.collection('users').findOne({ _id: ObjectId(userID) });
@@ -26,11 +26,11 @@ class JobSeekerMiddleWare {
 	    req.jobSeeker = data;
             next();
           } else {
-            res.status(403).json({ error: 'Access Denied' });
+            res.status(403).json({ error: 'Access Denied/Role is not Job Seeker' });
 	    throw new Error('Response message');
           }
         } else if (!data) {
-          res.status(404).json({ error: 'User not found' });
+          res.status(404).json({ error: 'User not found/User not found from the mongodb' });
           throw new Error('Response message');
         }
       })
@@ -38,7 +38,7 @@ class JobSeekerMiddleWare {
 	if (error === 'Response message') {
           return;
 	} else {
-          return res.status(500).json({ error: 'Internal Server Error' });
+          return res.status(500).json({ error: 'Internal Server Error/catch section' });
         }
       });
   };

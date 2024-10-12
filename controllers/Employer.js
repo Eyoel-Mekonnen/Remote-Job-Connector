@@ -48,10 +48,10 @@ class Employer {
           createdAt,
         })
       } else {
-        return res.status(500).json({ message: 'Failed to create' });
+        return res.status(500).json({ message: 'Failed to create/Fields to be created' });
       } 
     } catch (error) {
-      return res.status(500).json({ message: 'Failed to create' });
+      return res.status(500).json({ message: 'Failed to create/catch section' });
     }
   }
   static async update(req, res) {
@@ -76,7 +76,6 @@ class Employer {
            updateObject
          })
       } else {
-	console.log('Am i inside here');
         return res.status(304).send("Not found");
       }
    
@@ -145,19 +144,17 @@ class Employer {
       /* Verify that this employer has authority over this application so that he can download the file */
       const job = await dbClient.db.collection('jobs').findOne({ _id: ObjectId(jobId), employerId: ObjectId(employerId) });
       if (!job) {
-	console.log('So its me');
-        return res.status(403).json({ error: 'Access Denied' });
+        return res.status(403).json({ error: 'Access Denied/Job was not fetched from findOne' });
       }
       const application = dbClient.db.collection('applications').findOne({ jobId: ObjectId(jobId), applicationId: ObjectId(applicationId) });
       if (!application) {
-	console.log('Is it me')
         return res.status(403).json({ error: 'Access Denied' });
       }
       const filePath = application.cvFilePath;
       const url = await Employer.getSignedUrl(filePath);
       return res.status(200).json({ downloadedUrl: url });
     } catch (error) {
-      return res.status(500).json({ error: 'Failed to retrieve applications' });
+      return res.status(500).json({ error: 'Failed to retrieve applications/catch section' });
     }
   }
 }
