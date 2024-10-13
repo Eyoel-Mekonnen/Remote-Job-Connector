@@ -126,7 +126,7 @@ exports.getMe = (req, res) => {
       if (!data) {
         return res.status(401).json({ error: 'Unauthorized/No user with that ID found from mongodb' });
       }
-      return res.status(200).json({ id: data._id, email: data.email });
+      return res.status(200).json({ id: data._id, email: data.email, role: data.role });
     })
     .catch(() => res.status(401).json({ error: 'Unauthorized/Error Catch section' }));
 };
