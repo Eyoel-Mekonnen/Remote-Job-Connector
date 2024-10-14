@@ -239,9 +239,25 @@ class JobSeeker {
         .skip(skip)
         .limit(limit)
         .toArray();
-      return res.status(200).json(jobs, totalJobs, totalPages, page);
+      return res.status(200).json({jobs, totalJobs, totalPages, page);
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
+    }
+  };
+  static async getJobsById(req, res) {
+    try {
+      const jobId = req.params ? req.params.jobId: null;
+      if (!jobId) {
+        return res.status(404).json({error: 'No job found with that Id'})
+      }
+      const job = await dbClient.db.collection('jobs').findOne({_id: ObjectId(jobId)});
+      if (job) {
+        return res.status(200).json({message:'job retrieved Successfully', job});
+      } else {
+        return res.status(404).json({error: 'There was an error retrieving the job from database'});
+      }
+    } catch (error) {
+      return res.status(500).json({error: 'Internal error occured when retrieving jobId'});
     }
   };
 }
