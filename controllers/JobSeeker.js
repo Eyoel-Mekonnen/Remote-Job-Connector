@@ -239,7 +239,7 @@ class JobSeeker {
         .skip(skip)
         .limit(limit)
         .toArray();
-      return res.status(200).json({jobs, totalJobs, totalPages, page);
+      return res.status(200).json({jobs, totalJobs, totalPages, page});
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
     }
