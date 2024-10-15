@@ -246,7 +246,7 @@ class JobSeeker {
       const totalJobs = await dbClient.db.collection('jobs').countDocuments();
       const totalPages = Math.ceil(totalJobs / limit); 
       const cacheKey = `jobs:${page}`;
-      let cacheList = await redisClient.lrange('cacheList', 0, -1);
+      let cacheList = await redisClient.lRange('cacheList', 0, -1);
       if (cacheList.length === 0) {;
         cacheList = [];
       }
