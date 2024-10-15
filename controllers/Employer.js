@@ -146,7 +146,7 @@ class Employer {
       if (!job) {
         return res.status(403).json({ error: 'Access Denied/Job was not fetched from findOne' });
       }
-      const application = await dbClient.db.collection('applications').findOne({ jobId: ObjectId(jobId), applicationId: ObjectId(applicationId) });
+      const application = await dbClient.db.collection('applications').findOne({ jobId: ObjectId(jobId), _id: ObjectId(applicationId) });
       if (!application) {
         return res.status(403).json({ error: 'Access Denied' });
       }
