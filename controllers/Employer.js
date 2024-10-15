@@ -160,12 +160,15 @@ class Employer {
   static async getCreatedJobs(req, res) {
     try {
       const employerId = req.employer._id;
-      const createdJobs = await dbClient.db.collection('jobs').findOne({employerId: ObjectId(employerId)});
+      const createdJobs = await dbClient.db.collection('jobs').find({employerId: ObjectId(employerId)}).toArray();
       /** title, id, count **/
-      if (!createdJobs) {
+      if (createdJobs.length === 0) {
         return res.status(404).json({error: 'No jobs created by this id'});
       } else {
-        return res.status(200).json({ id: createdJobs._id ,title: createdJobs.title})
+       const response = createdJobs.map(job => {
+         return { id: job._id, title: job.title }; // Assuming you only want to return the ID and title
+       }); 
+        return res.status(200).json(response);
       }
     } catch (error) {
       return res.status(500).json({error: 'Internal Server error'});
