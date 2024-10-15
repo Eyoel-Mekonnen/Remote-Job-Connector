@@ -167,9 +167,6 @@ class JobSeeker {
         return res.status(404).json({error: 'Job Seeker Name not Provided'});
       }
 
-      if (!jobSeekerName) {
-
-      }
       if (!jobSeekerId) {
         return res.status(400).json({ error: 'No ID provided' });
       }
@@ -195,7 +192,9 @@ class JobSeeker {
       });
      /* I am creating event listener to catch errors */
       blobStream.on('error', (error) => {
-        return res.status(500).json({error: 'Unable to upload file at this time'});
+        if (!res.headersSent) {
+          return res.status(500).json({error: 'Unable to upload file at this time'});
+        }
       })
       /* creating event listener here that will executed when the files is uploaded to the stream and make it public */
       blobStream.on('finish', async() => {
@@ -234,7 +233,9 @@ class JobSeeker {
           return res.status(500).json({ error: 'An error occured when uploading CV' });
         }
 	*/
-	return res.status(500).json({ error: 'An error occured when uploading CV' });
+	if (!res.headersSent) {
+	  return res.status(500).json({ error: 'An error occured when uploading CV' });
+        }
     }
   };
   static async getJobs(req, res) {

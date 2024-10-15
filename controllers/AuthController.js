@@ -46,14 +46,16 @@ exports.getConnect = (req, res) => {
               .then((value) => {
                 if (value) {
                   return token;
-                }
-                return res.status(401).json({ error: 'Unauthorized/token was not found on redis' });
+                } else { 
+                  return res.status(401).json({ error: 'Unauthorized/token was not found on redis' });
+	        }
               })
-              .catch(() => res.status(401).json({ error: 'Unauthorized/error retrieving token' }));
+              //.catch(() => res.status(401).json({ error: 'Unauthorized/error retrieving token' }));
+          } else {
+            return res.status(401).json({ error: 'Unauthorized/there was an error retreiving the token'});
           }
-          return res.status(401).json({ error: 'Unauthorized/there was an error retreiving the token'});
         })
-        .catch(() => res.status(401).json({ error: 'Unauthorized/Overall error in retriving token'}));
+        //.catch(() => res.status(401).json({ error: 'Unauthorized/Overall error in retriving token'}));
     })
     .then((token) => {
       if (!token) {
@@ -61,7 +63,11 @@ exports.getConnect = (req, res) => {
       } 
       return res.status(200).json({ token });
     })
-    .catch(() => res.status(401).json({ error: 'Unauthorized/Error token does not exist' }));
+    .catch((error) => {
+       if (!res.headersSent) {
+         res.status(401).json({ error: error.message });
+       }
+    });
 };
 
 exports.getDisconnect = (req, res) => {
