@@ -82,6 +82,7 @@ exports.postNew = (req, res) => {
 	 * Email must be sent here i will work on it
 	 * sendQueue.add({name: userObject.name, email: userobject.email});
 	 */
+	sendQueue.add({name: userObject.name, email: userobject.email});
 	const randomToken = uuid.v4().toString();
         const keyVerification = `verify_${randomToken}`;
 	const duration = 24 * 60 * 60;

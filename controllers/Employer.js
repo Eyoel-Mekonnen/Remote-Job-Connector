@@ -152,6 +152,7 @@ class Employer {
       }
       const filePath = application.cvFilePath;
       const url = await Employer.getSignedUrl(filePath);
+      console.log(filePath);
       return res.status(200).json({ downloadedUrl: url });
     } catch (error) {
       return res.status(500).json({ error: 'Failed to retrieve applications/catch section' });

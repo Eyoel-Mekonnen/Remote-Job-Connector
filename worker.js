@@ -44,12 +44,12 @@ sendQueue.process(async (job, done) => {
         pass: process.env.PASSWORD,
       }
     });
-    const verificationLink = `https://yourdomain.com/verify?token=${token}`;
+    const verificationLink = `https://remote-job-connector.vercel.app/verify?token=${token}`;
     const info = await transporter.sendMail({
       from: "eyoelakatommyshellby@gmail.com",
       to: `${email}`,
       subject: 'Welcome to Remote Jobs',
-      text: `Welcome back homie Its time to get you hired!!! \n Verification Link ${verificationLink}`,
+      text: `Welcome To Remote-job-connector Its time to get you hired!!! \n Verification Link ${verificationLink}`,
     });
     done();
   } else {
