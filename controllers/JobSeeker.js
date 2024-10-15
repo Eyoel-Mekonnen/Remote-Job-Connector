@@ -245,6 +245,7 @@ class JobSeeker {
       const skip = (page - 1) * limit;
       const totalJobs = await dbClient.db.collection('jobs').countDocuments();
       const totalPages = Math.ceil(totalJobs / limit); 
+      /*
       const cacheKey = `jobs:${page}`;
       let cacheList = await redisClient.lRange('cacheList', 0, -1);
       if (cacheList.length === 0) {;
@@ -261,24 +262,30 @@ class JobSeeker {
 	await redisClient.rpush('cacheList', ...cacheList);
 	return res.status(200).json({jobs: JSON.parse(jobsObject), totalJobs, totalPages, page});
       } else {
+      */
         const jobs = await dbClient.db.collection('jobs')
           .find({})
           /*.sort({ createdAt: -1})*/
           .skip(skip)
           .limit(limit)
           .toArray();
+	/*
         if (cacheList.length >= cacheSize) {
           cacheList.shift();
+        
         }
-        const newCacheKey = `jobs:${page}`;
-        cacheList.push(newCacheKey);
-	await redisClient.del('cacheList');
-	await redisClient.rpush('cacheList', ...cacheList);
-        const addedNewCache = await redisClient.setex(newCacheKey, 3600, JSON.stringify(jobs));
+	*/
+        //const newCacheKey = `jobs:${page}`;
+        //cacheList.push(newCacheKey);
+	//await redisClient.del('cacheList');
+	//await redisClient.rpush('cacheList', ...cacheList);
+        //const addedNewCache = await redisClient.setex(newCacheKey, 3600, JSON.stringify(jobs));
+	/*
         if (!addedNewCache) {
           return res.status(404.).json({error: 'New cache Data not added to redis'});
         }
-      }
+	*/
+      //}
         return res.status(200).json({jobs, totalJobs, totalPages, page});
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
