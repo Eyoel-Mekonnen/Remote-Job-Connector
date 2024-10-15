@@ -58,8 +58,9 @@ exports.getConnect = (req, res) => {
     .then((token) => {
       if (!token) {
         return res.status(401).json({ error: 'Unauthorized/token does not exist' });
+      } else {
+        return res.status(200).send({ token });
       }
-      return res.status(200).send({ token });
     })
     //.catch(() => res.status(401).json({ error: 'Unauthorized/Error token does not exist' }));
 };
