@@ -37,7 +37,7 @@ router.delete('/jobs/:jobId', EmployerMiddleWare.getEmployer, Employer.deleteJob
 router.get('/jobs/:jobId/applications', EmployerMiddleWare.getEmployer, Employer.jobApplications); 
 /* Here first for a specific Job that was posted employer will download a specific resume */
 router.get('/jobs/:jobId/applications/:applicationId/download-cv', EmployerMiddleWare.getEmployer, Employer.getLinkDownloadCv);
-
+router.get('/employers/jobs', EmployerMiddleWare.getEmployer, Employer.getCreatedJobs)
 /**Job Seekers Only */
 router.post('/jobseekers/:jobId/apply', JobSeekerMiddleWare.getJobSeeker, upload.single('file'), JobSeeker.uploadCv);
 /*router.get('/jobs', JobSeekerMiddleWare.getJobSeeker, JobSeeker.getJobs);*/

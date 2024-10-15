@@ -55,6 +55,7 @@ class JobSeeker {
         return res.status(201).json({
           message: "Profile created Successfully",
           jobSeekerId: insertedData.insertedId,
+	  name,
           telegram,
           github,
           linkedin,
@@ -161,6 +162,14 @@ class JobSeeker {
       const file = req.file ? req.file: null;
       const jobId = req.params ? req.params.jobId: null;
       const jobSeekerId = req.jobSeeker ? req.jobSeeker._id: null;
+      const jobSeekerName = await dbClient.db('JobSeeker').findOne({_id: ObjectId(jobSeekerId)});
+      if (!jobSeekerName) {
+        return res.status(404).json({error: 'Job Seeker Name not Provided'});
+      }
+
+      if (!jobSeekerName) {
+
+      }
       if (!jobSeekerId) {
         return res.status(400).json({ error: 'No ID provided' });
       }
@@ -200,7 +209,9 @@ class JobSeeker {
         const applicationObject = {
           jobId: ObjectId(jobId),
           jobSeekerId: ObjectId(jobSeekerId),
+	  //jobSeekerName,
           cvFilePath: fileName,
+	  createdAt: Date.now(),
         }
 	const application = await dbClient.db.collection('applications').insertOne(applicationObject);
 	if (!application) {
@@ -228,18 +239,47 @@ class JobSeeker {
   };
   static async getJobs(req, res) {
     try {
+      const cacheSize = 5;
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
       const skip = (page - 1) * limit;
       const totalJobs = await dbClient.db.collection('jobs').countDocuments();
-      const totalPages = Math.ceil(totalJobs / limit);
-      const jobs = await dbClient.db.collection('jobs')
-        .find({})
-        /*.sort({ createdAt: -1})*/
-        .skip(skip)
-        .limit(limit)
-        .toArray();
-      return res.status(200).json({jobs, totalJobs, totalPages, page});
+      const totalPages = Math.ceil(totalJobs / limit); 
+      const cacheKey = `jobs:${page}`;
+      let cacheList = await redisClient.lrange('cacheList', 0, -1);
+      if (cacheList.length === 0) {;
+        cacheList = [];
+      }
+      if (cacheList.includes(cacheKey)) {
+        const jobsObject = await redisClient.get(cacheKey);
+	const indexFound = cacheList.indexOf(cacheKey);
+	const lastIndex = cacheList.length - 1;
+	const tempValue =cacheList[indexFound];
+	cacheList[indexFound] = cacheList[lastIndex];
+	cacheList[lastIndex] = tempValue;
+	await redisClient.del('cacheList');
+	await redisClient.rpush('cacheList', ...cacheList);
+	return res.status(200).json({jobs: JSON.parse(jobsObject), totalJobs, totalPages, page});
+      } else {
+        const jobs = await dbClient.db.collection('jobs')
+          .find({})
+          /*.sort({ createdAt: -1})*/
+          .skip(skip)
+          .limit(limit)
+          .toArray();
+        if (cacheList.length >= cacheSize) {
+          cacheList.shift();
+        }
+        const newCacheKey = `jobs:${page}`;
+        cacheList.push(newCacheKey);
+	await redisClient.del('cacheList');
+	await redisClient.rpush('cacheList', ...cacheList);
+        const addedNewCache = await redisClient.setex(newCacheKey, 3600, JSON.stringify(jobs));
+        if (!addedNewCache) {
+          return res.status(404.).json({error: 'New cache Data not added to redis'});
+        }
+      }
+        return res.status(200).json({jobs, totalJobs, totalPages, page});
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
     }

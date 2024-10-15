@@ -157,5 +157,19 @@ class Employer {
       return res.status(500).json({ error: 'Failed to retrieve applications/catch section' });
     }
   }
+  static async getCreatedJobs(req, res) {
+    try {
+      const employerId = req.employer._id;
+      const createdJobs = await dbClient.db.collection('jobs')({employerId: ObjectId(employerId)});
+      /** title, id, count **/
+      if (!createdJobs) {
+        return res.status(404).json({error: 'No jobs created by this id'});
+      } else {
+        return res.status(200).json({ id: createdJobs._id ,title: createdJobs.title})
+      }
+    } catch (error) {
+      return res.status(500).json({error: 'Internal Server error'});
+    }
+  }
 }
 module.exports = Employer;
