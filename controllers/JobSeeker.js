@@ -162,7 +162,7 @@ class JobSeeker {
       const file = req.file ? req.file: null;
       const jobId = req.params ? req.params.jobId: null;
       const jobSeekerId = req.jobSeeker ? req.jobSeeker._id: null;
-      const jobSeekerName = await dbClient.db('JobSeeker').findOne({_id: ObjectId(jobSeekerId)});
+      const jobSeekerName = await dbClient.db.collection('JobSeeker').findOne({_id: ObjectId(jobSeekerId)});
       if (!jobSeekerName) {
         return res.status(404).json({error: 'Job Seeker Name not Provided'});
       }
