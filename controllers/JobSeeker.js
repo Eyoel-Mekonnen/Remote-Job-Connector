@@ -208,7 +208,6 @@ class JobSeeker {
         const applicationObject = {
           jobId: ObjectId(jobId),
           jobSeekerId: ObjectId(jobSeekerId),
-	  //jobSeekerName,
           cvFilePath: fileName,
 	  createdAt: Date.now(),
         }
@@ -234,7 +233,7 @@ class JobSeeker {
         }
 	*/
 	if (!res.headersSent) {
-	  return res.status(500).json({ error: 'An error occured when uploading CV' });
+	  return res.status(500).json({ error: 'An error occured when uploading CV', error: error.message });
         }
     }
   };
