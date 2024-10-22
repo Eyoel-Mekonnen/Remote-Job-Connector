@@ -13,12 +13,12 @@ const redis = require('../utils/redis');
 exports.getConnect = (req, res) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    return res.status(401).send({ error: 'Unauthorized' });
+    return res.status(401).send({ error: 'Unauthorized/no authorization header provided' });
   }
   const authCredentials = authorization.split(' ');
   const authType = authCredentials[0];
   if (authType !== 'Basic') {
-    return res.status(401).send({ error: 'Unauthorized' });
+    return res.status(401).send({ error: 'Unauthorized/authorization not basic' });
   }
   const base64Encoded = authCredentials[1];
   const decodedByte = Buffer.from(base64Encoded, 'base64');
@@ -65,7 +65,7 @@ exports.getConnect = (req, res) => {
     })
     .catch((error) => {
        if (!res.headersSent) {
-         res.status(401).json({ error: error.message });
+         res.status(401).json({ error: error.message, message: 'error in the catch section' });
        }
     });
 };

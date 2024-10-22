@@ -37,9 +37,7 @@ class JobSeekerMiddleWare {
       .catch((error) => {
 	if (error === 'Response message') {
           return;
-	} else {
-          return res.status(500).json({ error: 'Internal Server Error/catch section' });
-        }
+	}
       });
   };
 }

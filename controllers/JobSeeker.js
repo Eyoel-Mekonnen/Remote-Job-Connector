@@ -265,12 +265,12 @@ class JobSeeker {
 	return res.status(200).json({jobs: JSON.parse(jobsObject), totalJobs, totalPages, page});
       } else {
       */
-        const jobs = await dbClient.db.collection('jobs')
-          .find({})
+      const jobs = await dbClient.db.collection('jobs')
+        .find({})
           /*.sort({ createdAt: -1})*/
-          .skip(skip)
-          .limit(limit)
-          .toArray();
+        .skip(skip)
+        .limit(limit)
+        .toArray();
 	/*
         if (cacheList.length >= cacheSize) {
           cacheList.shift();
@@ -288,7 +288,7 @@ class JobSeeker {
         }
 	*/
       //}
-        return res.status(200).json({jobs, totalJobs, totalPages, page});
+      return res.status(200).json({jobs, totalJobs, totalPages, page});
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error ${error}` });
     }
