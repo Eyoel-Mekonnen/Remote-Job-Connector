@@ -32,6 +32,8 @@ sendQueue.process(async (job, done) => {
   const email = job.data.email;
   const name = job.data.name;
   const token = job.data.token;
+  const connection = await dbClient.isAlive()
+  console.log(connection)
   const output = await dbClient.db.collection('users').findOne({ email });
   if (output && output !== null) {
     const transporter = nodemailer.createTransport({
