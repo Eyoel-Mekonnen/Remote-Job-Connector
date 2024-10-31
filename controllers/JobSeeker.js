@@ -220,7 +220,7 @@ class JobSeeker {
           return res.status(201).json({ message: 'CV uploaded and application created successfully', applicationId: application.insertedId });
         }
       } catch (error) {
-	return res.status(500).json({ error: 'An error occured when uploading' });
+	return res.status(500).json({ error: `An error occured when uploading ${error.message}` });
       }
       });
       /* Here I am passing the data is stored in the buffer because am using multer to store on memory*/
